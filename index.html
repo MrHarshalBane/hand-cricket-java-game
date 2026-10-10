@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hand Cricket Game 🏏 – Java Game Web Edition</title>
+  <meta name="description" content="Play the classic Hand Cricket game online! Toss, bat, bowl, and score runs against the computer with realistic stadium commentary and animations." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="game-wrapper">
+    <!-- Top Nav / Header -->
+    <header class="game-header">
+      <div class="logo">
+        <span class="logo-emoji">🏏</span>
+        <div>
+          <h1>HAND CRICKET</h1>
+          <p class="edition">Java Console Edition • Playable Online</p>
+        </div>
+      </div>
+      <div class="stats-pills">
+        <div class="pill win-pill"><i class="fa-solid fa-trophy"></i> Wins: <span id="stat-wins">0</span></div>
+        <div class="pill loss-pill"><i class="fa-solid fa-skull"></i> Losses: <span id="stat-losses">0</span></div>
+        <button class="btn-sound" id="btn-sound" title="Toggle Sound"><i class="fa-solid fa-volume-high"></i></button>
+      </div>
+    </header>
+
+    <!-- Stadium Scoreboard Display -->
+    <section class="stadium-scoreboard">
+      <div class="scoreboard-inner">
+        <div class="team-panel user-panel" id="panel-user">
+          <div class="avatar-box">🧑</div>
+          <div class="team-meta">
+            <span class="role-tag" id="tag-user-role">BATTING</span>
+            <h2 class="team-name">YOU</h2>
+            <div class="score-display"><span id="score-user">0</span> <small id="status-user-out"></small></div>
+          </div>
+        </div>
+
+        <div class="vs-center">
+          <div class="target-badge" id="target-badge">1ST INNINGS</div>
+          <div class="match-stage" id="match-stage">TOSS TIME</div>
+        </div>
+
+        <div class="team-panel comp-panel" id="panel-comp">
+          <div class="team-meta align-right">
+            <span class="role-tag" id="tag-comp-role">BOWLING</span>
+            <h2 class="team-name">COMPUTER (AI)</h2>
+            <div class="score-display"><span id="score-comp">0</span> <small id="status-comp-out"></small></div>
+          </div>
+          <div class="avatar-box comp">🤖</div>
+        </div>
+      </div>
+
+      <!-- Live Commentary Bar -->
+      <div class="commentary-bar">
+        <div class="commentary-icon"><i class="fa-solid fa-microphone-lines"></i></div>
+        <div class="commentary-text" id="commentary-text">Welcome to the stadium! Choose Heads or Tails to begin the toss.</div>
+      </div>
+    </section>
+
+    <!-- Main Interactive Arena -->
+    <main class="arena-card">
+      <!-- 1. TOSS SCREEN -->
+      <section class="game-screen active" id="screen-toss">
+        <h3 class="screen-title"><i class="fa-solid fa-coins"></i> Toss Time!</h3>
+        <p class="screen-desc">Call Heads or Tails to decide who bats or bowls first:</p>
+        
+        <div class="toss-options">
+          <button class="toss-btn" onclick="playToss(1)">
+            <span class="coin-icon">👑</span>
+            <span class="coin-label">1. HEADS</span>
+          </button>
+          <button class="toss-btn" onclick="playToss(2)">
+            <span class="coin-icon">🦅</span>
+            <span class="coin-label">2. TAILS</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- 2. TOSS DECISION SCREEN (if user wins toss) -->
+      <section class="game-screen" id="screen-decision">
+        <h3 class="screen-title">🎉 You Won The Toss!</h3>
+        <p class="screen-desc">What do you choose to do first?</p>
+        <div class="decision-options">
+          <button class="decision-btn bat" onclick="chooseDecision('bat')">
+            <span class="btn-icon">🏏</span>
+            <span>BAT FIRST</span>
+          </button>
+          <button class="decision-btn bowl" onclick="chooseDecision('bowl')">
+            <span class="btn-icon">⚾</span>
+            <span>BOWL FIRST</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- 3. PLAY SCREEN (PITCH & NUMBERS) -->
+      <section class="game-screen" id="screen-play">
+        <!-- Hand Throw Animation Stage -->
+        <div class="pitch-stage">
+          <div class="throw-box" id="user-throw-box">
+            <span class="player-label">YOUR SHOT</span>
+            <div class="hand-gesture" id="user-hand">❓</div>
+            <div class="throw-val" id="user-throw-num">-</div>
+          </div>
+
+          <div class="pitch-clash" id="pitch-clash">
+            <span class="clash-icon">⚡</span>
+          </div>
+
+          <div class="throw-box" id="comp-throw-box">
+            <span class="player-label">COMPUTER</span>
+            <div class="hand-gesture" id="comp-hand">❓</div>
+            <div class="throw-val" id="comp-throw-num">-</div>
+          </div>
+        </div>
+
+        <!-- 1 to 6 Finger Input Buttons -->
+        <div class="action-prompt" id="action-prompt">Choose your hand number (1 - 6):</div>
+        <div class="number-buttons-grid">
+          <button class="num-btn" onclick="handleNumberInput(1)"><span class="fingers">☝️</span><span class="num">1</span></button>
+          <button class="num-btn" onclick="handleNumberInput(2)"><span class="fingers">✌️</span><span class="num">2</span></button>
+          <button class="num-btn" onclick="handleNumberInput(3)"><span class="fingers">🤟</span><span class="num">3</span></button>
+          <button class="num-btn" onclick="handleNumberInput(4)"><span class="fingers">🖖</span><span class="num">4</span></button>
+          <button class="num-btn" onclick="handleNumberInput(5)"><span class="fingers">🖐️</span><span class="num">5</span></button>
+          <button class="num-btn sixer" onclick="handleNumberInput(6)"><span class="fingers">👍</span><span class="num">6</span></button>
+        </div>
+
+        <div class="recent-balls-track">
+          <span class="track-label">Recent Balls:</span>
+          <div class="balls-history" id="balls-history"></div>
+        </div>
+      </section>
+
+      <!-- 4. MATCH RESULT SCREEN -->
+      <section class="game-screen" id="screen-result">
+        <div class="result-box" id="result-box">
+          <div class="result-trophy" id="result-icon">🏆</div>
+          <h2 class="result-title" id="result-title">YOU WON!</h2>
+          <p class="result-summary" id="result-summary">You chased down the target with brilliant batting!</p>
+          
+          <div class="match-summary-card">
+            <div class="summary-row">
+              <span>Your Final Score:</span>
+              <strong id="final-user-score">0</strong>
+            </div>
+            <div class="summary-row">
+              <span>Computer Score:</span>
+              <strong id="final-comp-score">0</strong>
+            </div>
+          </div>
+
+          <button class="btn-play-again" onclick="resetGame()"><i class="fa-solid fa-rotate-right"></i> Play Again</button>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer Rules & Info -->
+    <footer class="game-footer">
+      <div class="rules-summary">
+        <b>Rules:</b> Choose numbers 1 to 6. If both choose the <b>same number</b>, the batsman is <b>OUT</b>! Otherwise, the batsman scores those runs.
+      </div>
+      <p class="repo-link">Original Java code in <a href="game.java"><code>game.java</code></a> • <a href="https://github.com/MrHarshalBane/hand-cricket-java-game" target="_blank">View GitHub Repo</a></p>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
